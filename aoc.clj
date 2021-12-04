@@ -4,11 +4,21 @@
 
 (def path (subs *file* 0 (inc (str/last-index-of *file* "/"))))
 
+(defn file->char-matrix [f]
+  (->> f (str path) slurp str/split-lines (map seq)))
+
 (defn file->int-seq [f]
   (->> f (str path) slurp str/split-lines (map #(Integer/parseInt %))))
 
 (defn file->str-seq [f]
   (->> f (str path) slurp str/split-lines))
+
+(defn transpose [m]
+  (apply (fn [& xs] (apply map list xs)) m))
+
+(defn print-day [d p1 p2]
+  (println "Day" d "-> part 1:" p1)
+  (println "      -> part 2:" p2))
 
 ;;
 ;; Day 1
@@ -26,8 +36,7 @@
        day-1-1))
 
 (let [input (file->int-seq "input/01")]
-  (println "Day 1 -> part 1:" (day-1-1 input))
-  (println "      -> part 2:" (day-1-2 input)))
+  (print-day 1 (day-1-1 input) (day-1-2 input)))
 
 ;;
 ;; Day 2
@@ -59,5 +68,26 @@
                  (map (fn [command]
                         (let [[dir x] (str/split command #" ")]
                           [dir (Integer/parseInt x)]))))]
-  (println "Day 2 -> part 1:" (day-2-1 input))
-  (println "      -> part 2:" (day-2-2 input)))
+  (print-day 2 (day-2-1 input) (day-2-2 input)))
+
+;;
+;; Day 3
+;;
+
+(defn day-3-1 [input]
+  (let [[g e] (reduce
+                (fn [[g e] row]
+                  (let [{times-0 \0 times-1 \1} (frequencies row)]
+                    (if (< times-0 times-1)
+                      [(str g 1) (str e 0)]
+                      [(str g 0) (str e 1)])))
+                ["" ""]
+                input)]
+    (* (Integer/parseInt g 2)
+       (Integer/parseInt e 2))))
+
+(defn day-3-2 [input]
+  )
+
+(let [input (transpose (file->char-matrix "input/03"))]
+  (print-day 3 (day-3-1 input) (day-3-2 input)))
