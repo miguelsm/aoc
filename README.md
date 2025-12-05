@@ -1,13 +1,18 @@
-# Advent of Code 2021
+# Advent of Code
 
-Solutions to [Advent of Code 2021](https://adventofcode.com/2021/) in Clojure using [babashka](https://github.com/babashka/babashka).
+Solutions to [Advent of Code](https://adventofcode.com/) in Clojure.
 
-## Run
+## Layout
 
-``` sh
-./aoc.clj
-# or
-nix-shell -p babashka --command ./aoc.clj
-# or
-docker run --rm -it -v${PWD}:/tmp babashka/babashka /tmp/aoc.clj
-```
+- Inputs: `resources/inputs/<year>/dayNN.txt`
+- Clojure: `src/aoc/y<year>/dNN.clj` (namespace `aoc.y<year>.dNN`)
+- Fennel and other languages: `alt/<lang>/<year>/dayNN.*`
+
+Babashka tasks:
+
+- `bb run-clj <year> <dayNN>` – run the Clojure solution.
+- `bb run-fennel <year> <dayNN>` – run the Fennel solution (requires `fennel` on PATH).
+
+## Tests
+
+- `clojure -M:test` – run all Clojure tests (uses `cognitect.test-runner`).

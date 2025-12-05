@@ -1,0 +1,32 @@
+{:paths ["src" "resources"]
+ :tasks
+ {:requires [[clojure.string :as string]]
+
+  ;; Run Clojure canonical solution:
+  ;;   bb run-clj 2024 01
+  run-clj
+  {:doc  "Run Clojure AoC solution: bb run-clj <year> <dayNN>"
+   :task (let [[year day :as args] *command-line-args*]
+           (if (not= 2 (count args))
+             (println "Usage: bb run-clj <year> <dayNN>")
+             (let [ns-sym (symbol (format "aoc.y%s.d%s" year day))
+                   _      (require ns-sym)
+                   input  (slurp (format "resources/inputs/%s/day%s.txt" year day))
+                   part-1 (ns-resolve ns-sym 'part-1)
+                   part-2 (ns-resolve ns-sym 'part-2)]
+               (println "Clojure" year "Day" day)
+               (println "Part 1:" (part-1 input))
+               (println "Part 2:" (part-2 input)))))}
+
+  ;; Run Fennel alternative solution:
+  ;;   bb run-fennel 2024 01
+  run-fennel
+  {:doc  "Run Fennel AoC solution: bb run-fennel <year> <dayNN>"
+   :task (let [[year day :as args] *command-line-args*]
+           (if (not= 2 (count args))
+             (println "Usage: bb run-fennel <year> <dayNN>")
+             (let [script (format "alt/fennel/%s/day%s.fnl" year day)
+                   input  (format "resources/inputs/%s/day%s.txt" year day)]
+               (when-not (.exists (java.io.File. script))
+                 (throw (ex-info "Fennel script not found" {:script script})))
+               (shell (format "fennel %s %s" script input)))))}}}
